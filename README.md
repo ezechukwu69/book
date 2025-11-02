@@ -71,7 +71,7 @@ book
 
 ## Where are my bookmarks, though?
 
-Book leverages `os.UserConfigDir` to determine where to store your bookmarks. [More information on how UserConfigDir determines which directory here](https://pkg.go.dev/os#UserConfigDir)
+Book leverages `std.fs.getAppDataDir` to determine where to store your bookmarks. [More information on how getAppDataDir determines which directory here](https://ziglang.org/documentation/0.15.2/std/#std.fs.getAppDataDir)
 
 ## Sharing Bookmarks
 
