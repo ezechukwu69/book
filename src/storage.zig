@@ -37,7 +37,7 @@ pub const Bookmark = struct {
     }
 
     pub fn lookup(allocator: std.mem.Allocator, reader: *std.Io.Reader, value: []const u8) !Bookmark {
-        while (reader.takeDelimiterExclusive('\n')) |line| {
+        while (reader.takeDelimiterInclusive('\n')) |line| {
             var iter = std.mem.splitScalar(u8, line, ',');
             const first = iter.first();
             if (std.mem.eql(u8, first, value)) {
@@ -80,7 +80,7 @@ pub const Bookmark = struct {
             results.deinit(allocator);
         }
 
-        while (reader.takeDelimiterExclusive('\n')) |line| {
+        while (reader.takeDelimiterInclusive('\n')) |line| {
             // Check if query matches
             const query_match = if (searchFields.query) |query|
                 query.len == 0 or std.mem.indexOf(u8, line, query) != null
@@ -130,7 +130,7 @@ pub const Bookmark = struct {
     /// Delete a bookmark by name. Reads all bookmarks from reader, filters out the one
     /// matching the bookmark name, and writes the remaining bookmarks to writer.
     pub fn delete(reader: *std.Io.Reader, bookmark_name: []const u8, writer: *std.Io.Writer) !void {
-        while (reader.takeDelimiterExclusive('\n')) |line| {
+        while (reader.takeDelimiterInclusive('\n')) |line| {
 
             // Check if this line starts with the bookmark name followed by a comma
             const prefix_len = bookmark_name.len + 1; // name + comma
