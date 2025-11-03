@@ -80,7 +80,7 @@ pub const Bookmark = struct {
             results.deinit(allocator);
         }
 
-        while (reader.takeDelimiterExclusive('\n')) |line| {
+        while (reader.takeDelimiterInclusive('\n')) |line| {
             // Check if query matches
             const query_match = if (searchFields.query) |query|
                 query.len == 0 or std.mem.indexOf(u8, line, query) != null
