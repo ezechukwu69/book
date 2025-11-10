@@ -86,14 +86,14 @@ const CLI = struct {
                     allocator.free(results);
                 }
 
-                var bookmarks: std.MultiArrayList(tui.Bookmark) = .empty;
-                defer bookmarks.deinit(allocator);
-                for (results) |bookmark| {
-                    try bookmarks.append(allocator, tui.Bookmark{
+                var bookmarks = try allocator.alloc(tui.Bookmark, results.len);
+                defer allocator.free(bookmarks);
+                for (results, 0..) |bookmark, i| {
+                    bookmarks[i] = tui.Bookmark{
                         .value = bookmark.value,
                         .path = bookmark.path,
                         .tags = "",
-                    });
+                    };
                 }
 
                 try tui.launch(allocator, bookmarks);
@@ -162,15 +162,15 @@ const CLI = struct {
         if (input.output) |output_path| {
             const out_file = try std.fs.cwd().createFile(output_path, .{});
             defer out_file.close();
-            
+
             var out_buffer: [1024]u8 = undefined;
             var writer = out_file.writer(&out_buffer);
-            
+
             for (results) |result| {
                 try result.print(&writer.interface);
             }
             try writer.interface.flush();
-            
+
             try self.stdout.print("Exported {d} bookmark(s) to: {s}\n", .{ results.len, output_path });
             try self.stdout.flush();
         } else {
